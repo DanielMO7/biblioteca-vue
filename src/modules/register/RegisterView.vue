@@ -41,6 +41,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+
               <v-row>
                 <v-col>
                   <v-text-field
@@ -98,6 +99,19 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <v-alert v-if="documento_validacion" outlined type="error" dense>
+                ¡Este <strong>número de Documento</strong> ya se encuentra
+                <strong>registrado</strong>!
+              </v-alert>
+              <v-alert v-if="email_validacion" outlined type="error" dense>
+                ¡Este <strong>E-mail</strong> ya se encuentra
+                <strong>registrado</strong>!
+              </v-alert>
+              <v-alert v-if="doc_email_validacion" outlined type="error" dense>
+                El <strong>número de Documento</strong> y el
+                <strong>E-mail</strong>
+                ya se encuentran <strong>registrados</strong>!
+              </v-alert>
               <v-row class="d-flex justify-center">
                 <v-card-actions>
                   <v-col>
@@ -105,7 +119,8 @@
                       :disabled="!valid"
                       color="#A52A2A"
                       class="white--text"
-                      @click="validate"
+                      @click="RegistarUsuario"
+                      :loading="loading_register"
                     >
                       Registrar
                     </v-btn>
@@ -129,23 +144,29 @@
   </v-container>
 </template>
 <script>
+import RegisterServices from "./Services/RegisterServices";
+
 export default {
   data: () => ({
     vista_icono_contrasena: false,
     vista_icono_contrasena_verify: false,
     valid: true,
-    nombre: "",
+    email_validacion: false,
+    documento_validacion: false,
+    doc_email_validacion: false,
+    loading_register: false,
+    nombre: "Daniel",
     nombreRules: [(v) => !!v || "Nombre es requerido"],
 
-    documento: "",
+    documento: "1004668435",
     documentoRules: [(v) => !!v || "El documento es requeridos"],
 
-    password: "",
+    password: "12345678",
     passwordRules: [(v) => !!v || "La contraseña es requerida"],
 
-    password_verify: "",
+    password_verify: "12345678",
 
-    email: "",
+    email: "daniel@gmail.com",
     emailRules: [
       (v) => !!v || "E-mail es requerido",
       (v) => /.+@.+\..+/.test(v) || "E-mail es inválido",
@@ -173,6 +194,39 @@ export default {
     },
     cancelar() {
       this.$router.push("/");
+    },
+    async RegistarUsuario() {
+      this.loading_register = true;
+      await RegisterServices.ValidarDocumentoEmail({
+        documento: this.documento,
+        email: this.email,
+      }).then(async (response) => {
+        if (response.data.status == 4) {
+          await RegisterServices.Registrar({
+            name: this.nombre,
+            email: this.email,
+            documento: this.documento,
+            rol: 2,
+            password: this.password,
+          }).then((response) => {
+            console.log(response);
+            this.loading_register = false;
+          });
+        } else if (response.data.status == 1) {
+          this.doc_email_validacion = true;
+          this.loading_register = false;
+          setTimeout(() => (this.doc_email_validacion = false), 5000);
+        } else if (response.data.status == 2) {
+          this.documento_validacion = true;
+          this.loading_register = false;
+          setTimeout(() => (this.documento_validacion = false), 5000);
+        } else if (response.data.status == 3) {
+          this.email_validacion = true;
+          this.loading_register = false;
+          setTimeout(() => (this.email_validacion = false), 5000);
+        }
+      });
+      this.loading_register = false;
     },
   },
 };
