@@ -48,7 +48,7 @@
                     :disabled="!valid"
                     color="#A52A2A"
                     class="mr-4 white--text"
-                    @click="validate"
+                    @click="ingresar"
                   >
                     Ingresar
                   </v-btn>
@@ -70,6 +70,7 @@
   </v-container>
 </template>
 <script>
+import Services from "./services/LoginServices";
 export default {
   data: () => ({
     valid: true,
@@ -88,6 +89,11 @@ export default {
     },
     cancelar() {
       this.$router.push("/");
+    },
+    async ingresar() {
+      await Services.IniciarSesion().then((response) => {
+        console.log(response);
+      });
     },
   },
 };
