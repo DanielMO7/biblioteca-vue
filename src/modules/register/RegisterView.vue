@@ -1,21 +1,19 @@
 <template>
   <v-container>
-    <v-card class="flex" flat tile>
-      <v-row style="justify-content: center; margin: 0px; margin-bottom: 50px">
-        <v-card max-width="374">
-          <v-img
-            height="550"
-            width="250"
-            src="../../assets/pexels-karolina-grabowska-4963815.jpg"
+    <v-row>
+      <v-col class="d-flex justify-center mb-5">
+        <v-card width="400" elevation="9">
+          <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
+            <v-card-title> REGISTRARSE </v-card-title>
+          </v-toolbar>
+          <!-- Formulario de Registro -->
+          <v-form
+            ref="formulario_registro"
+            v-model="valid_formulario"
+            lazy-validation
           >
-            <v-card-title class="justify-center" style="background: #a52a2a">
-              <h5>Registrarse</h5>
-            </v-card-title>
-          </v-img>
-        </v-card>
-        <v-card width="400">
-          <v-form ref="form" v-model="valid" lazy-validation>
-            <v-container class="mt-3">
+            <v-container class="mt-5">
+              <!-- Nombre -->
               <v-row>
                 <v-col>
                   <v-text-field
@@ -28,6 +26,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <!-- Documento -->
               <v-row>
                 <v-col>
                   <v-text-field
@@ -41,7 +40,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
-
+              <!-- Email -->
               <v-row>
                 <v-col>
                   <v-text-field
@@ -55,6 +54,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <!-- Contraseña -->
               <v-row>
                 <v-col>
                   <v-text-field
@@ -62,7 +62,7 @@
                     :append-icon="
                       vista_icono_contrasena ? 'mdi-eye' : 'mdi-eye-off'
                     "
-                    :rules="[rules.required, rules.min]"
+                    :rules="[reglas_password.required, reglas_password.min]"
                     :type="vista_icono_contrasena ? 'text' : 'password'"
                     name="input-10-1"
                     label="Contraseña"
@@ -84,7 +84,7 @@
                     :append-icon="
                       vista_icono_contrasena_verify ? 'mdi-eye' : 'mdi-eye-off'
                     "
-                    :rules="[rules.required, rules.min]"
+                    :rules="[reglas_password.required, reglas_password.min]"
                     :type="vista_icono_contrasena_verify ? 'text' : 'password'"
                     name="input-10-1"
                     label="Confirmación Contraseña"
@@ -99,6 +99,7 @@
                   ></v-text-field>
                 </v-col>
               </v-row>
+              <!-- Alerts que se muestran si encuentra un error del lado del backend -->
               <v-alert v-if="documento_validacion" outlined type="error" dense>
                 ¡Este <strong>número de Documento</strong> ya se encuentra
                 <strong>registrado</strong>!
@@ -112,11 +113,17 @@
                 <strong>E-mail</strong>
                 ya se encuentran <strong>registrados</strong>!
               </v-alert>
+              <v-alert v-if="password_validacion" outlined type="error" dense>
+                Las contraseñas <strong>No son Iguales!</strong> por favor,
+                <strong>verifícalas</strong>!
+              </v-alert>
+              <!-- Acciones del formulario -->
               <v-row class="d-flex justify-center">
                 <v-card-actions>
                   <v-col>
+                    <!-- Boton de Registro de Usuarios -->
                     <v-btn
-                      :disabled="!valid"
+                      :disabled="!valid_formulario"
                       color="#A52A2A"
                       class="white--text"
                       @click="RegistarUsuario"
@@ -126,6 +133,7 @@
                     </v-btn>
                   </v-col>
                   <v-col>
+                    <!-- Boton de Cancelacion del Registro -->
                     <v-btn
                       color="#A52A2A"
                       class="white--text"
@@ -139,106 +147,162 @@
             </v-container>
           </v-form>
         </v-card>
-      </v-row>
-    </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
 import RegisterServices from "./Services/RegisterServices";
+import Swal from "sweetalert2";
 
 export default {
   data: () => ({
     vista_icono_contrasena: false,
     vista_icono_contrasena_verify: false,
-    valid: true,
+
+    // Validaciones:
+    valid_formulario: true,
     email_validacion: false,
     documento_validacion: false,
     doc_email_validacion: false,
-    loading_register: false,
-    nombre: "Daniel",
-    nombreRules: [(v) => !!v || "Nombre es requerido"],
+    password_validacion: false,
 
-    documento: "1004668435",
+    // Loadings:
+    loading_register: false,
+
+    // Variables del Formulario:
+    nombre: "",
+    nombreRules: [(v) => !!v || "El nombre es requerido"],
+
+    documento: "",
     documentoRules: [(v) => !!v || "El documento es requeridos"],
 
-    password: "12345678",
+    password: "",
     passwordRules: [(v) => !!v || "La contraseña es requerida"],
+    reglas_password: {
+      required: (value) => !!value || "La contraseña es requerida.",
+      min: (v) => v.length >= 8 || "Mínimo 8 caracteres",
+    },
 
-    password_verify: "12345678",
+    password_verify: "",
 
-    email: "daniel@gmail.com",
+    email: "",
     emailRules: [
       (v) => !!v || "E-mail es requerido",
       (v) => /.+@.+\..+/.test(v) || "E-mail es inválido",
     ],
-    rules: {
-      required: (value) => !!value || "La contraseña es requerida.",
-      min: (v) => v.length >= 8 || "Mínimo 8 caracteres",
-    },
-    rules_verify: {
-      verify: (password, password_verify) =>
-        password != password_verify || "Las contraseñas no coinciden.",
-    },
   }),
 
   methods: {
-    validate() {
-      this.$refs.form.validate();
-    },
-
+    /**
+     * Verifica que las contraseñas sean iguales.
+     */
     verificar_contrasena() {
       if (this.password == this.password_verify) {
         return true;
       }
       return false;
     },
+    /**
+     * Retorna a la ruta de inicio.
+     */
     cancelar() {
       this.$router.push("/");
     },
+    /**
+     * Permite verificar la informacion ingresada y envia la peticion
+     * para el registro del nuevo usuario a crearce.
+     */
     async RegistarUsuario() {
-      this.loading_register = true;
-      await RegisterServices.ValidarDocumentoEmail({
-        documento: this.documento,
-        email: this.email,
-      }).then(async (response) => {
-        if (response.data.status == 4) {
-          await RegisterServices.Registrar({
-            name: this.nombre,
-            email: this.email,
+      // Verifica que el formulario tiene los campos llenos correctamente.
+      if (this.$refs.formulario_registro.validate()) {
+        this.loading_register = true;
+        // Verifica que las contraseñas sean iguales.
+        if (this.verificar_contrasena()) {
+          /** Validar documentoEmail verifica si el documento y el email ya se encuentran registrados. */
+          await RegisterServices.ValidarDocumentoEmail({
             documento: this.documento,
-            rol: 2,
-            password: this.password,
-          }).then((response) => {
-            console.log(response);
-            this.loading_register = false;
-          });
-        } else if (response.data.status == 1) {
-          this.doc_email_validacion = true;
+            email: this.email,
+          })
+            .then(async (response) => {
+              // Status 4 || Significa que el documento y el email no se encuentra registrados.
+              if (response.data.status == 4) {
+                // Registrar Registra los datos del usuario ingresado en la base de datos.
+                await RegisterServices.Registrar({
+                  name: this.nombre,
+                  email: this.email,
+                  documento: this.documento,
+                  rol: 2,
+                  password: this.password,
+                })
+                  .then((response) => {
+                    console.log(response);
+                    // Status 1 || Todo salio correctamente y se registro el usaurio.
+                    if (response.data.status == 1) {
+                      this.loading_register = false;
+                      Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "¡Registro exitoso, por favor inicia sesión!",
+                        showConfirmButton: false,
+                        timer: 2500,
+                      });
+                      this.$router.push("/ingresar");
+                    }
+                  })
+                  // Muestra el error en caso de que no se pudiera registrar.
+                  .catch((error) => {
+                    console.log(error);
+                    this.loading_register = false;
+                    Swal.fire({
+                      position: "center",
+                      icon: "error",
+                      title: "¡Ah ocurrido un error en el registro!",
+                      showConfirmButton: false,
+                      timer: 1500,
+                    });
+                  });
+                // Status 1 - Validacion del documento || El numero de documento y el email ya se encuentra registrado.
+              } else if (response.data.status == 1) {
+                this.doc_email_validacion = true;
+                this.loading_register = false;
+                setTimeout(() => (this.doc_email_validacion = false), 5000);
+                // Status 2 - Validacion del documento || El numero de documento ya se encuentra registrado.
+              } else if (response.data.status == 2) {
+                this.documento_validacion = true;
+                this.loading_register = false;
+                setTimeout(() => (this.documento_validacion = false), 5000);
+                // Status 2 - Validacion del documento || El email ya se encuentra registrado.
+              } else if (response.data.status == 3) {
+                this.email_validacion = true;
+                this.loading_register = false;
+                setTimeout(() => (this.email_validacion = false), 5000);
+              }
+            })
+            // Error en caso de que la validacion del documento falle.
+            .catch((error) => {
+              console.log(error);
+              this.loading_register = false;
+              Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Error al validar el documento",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+            });
           this.loading_register = false;
-          setTimeout(() => (this.doc_email_validacion = false), 5000);
-        } else if (response.data.status == 2) {
-          this.documento_validacion = true;
+          // Si las contraseñas no son iguales se muestra un alert.
+        } else {
+          this.password_validacion = true;
           this.loading_register = false;
-          setTimeout(() => (this.documento_validacion = false), 5000);
-        } else if (response.data.status == 3) {
-          this.email_validacion = true;
-          this.loading_register = false;
-          setTimeout(() => (this.email_validacion = false), 5000);
+          setTimeout(() => (this.password_validacion = false), 5000);
         }
-      });
-      this.loading_register = false;
+        // Si la validacion del documento no es true entonces se desactiva el loading.
+      } else {
+        this.loading_register = false;
+      }
     },
   },
 };
 </script>
-<style scoped>
-h5 {
-  text-align: center;
-  font-size: 25px;
-  font-style: unset;
-  text-transform: uppercase;
-  text-shadow: 1px 1px 1px rgb(59 59 59);
-  background: #a52a2a;
-  color: white;
-}
-</style>
