@@ -9,6 +9,7 @@
             >auto_stories</v-icon
           ></v-app-bar-nav-icon
         >
+
         <router-link to="/" class="text-rutas-logo">
           <v-toolbar-title class="color-bar">
             <h2>Biblioteca</h2>
@@ -17,8 +18,14 @@
 
         <v-spacer></v-spacer>
 
+        <!-- icono de navegacion responsive -->
+        <v-app-bar-nav-icon
+          class="reponsive_barra_navegacion"
+          @click.stop="dialog_movile"
+        ></v-app-bar-nav-icon>
+
         <!--Items de la Barra de Navegacion.-->
-        <v-toolbar-items>
+        <v-toolbar-items class="responsive_links">
           <v-btn text>
             <router-link to="/" class="text-rutas">Inicio</router-link>
           </v-btn>
@@ -43,10 +50,28 @@
 export default {
   name: "HeaderView",
 
-  data: () => ({}),
+  data: () => ({
+    dialog: false,
+  }),
+  methods: {
+    dialog_movile() {
+      this.$emit("dialog_movile");
+    },
+  },
 };
 </script>
 <style scoped>
+.reponsive_barra_navegacion {
+  display: none;
+}
+@media (max-width: 750px) {
+  .reponsive_barra_navegacion {
+    display: contents;
+  }
+  .responsive_links {
+    display: none;
+  }
+}
 .color-bar {
   color: #03363d !important;
 }
