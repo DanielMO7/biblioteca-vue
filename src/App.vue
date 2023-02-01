@@ -1,7 +1,11 @@
 <template>
   <v-app>
     <!--Header-->
-    <HeaderView @dialog_movile="dialog_movile" />
+    <HeaderView
+      @dialog_movile="dialog_movile"
+      :usuarioLogueado="usuarioLogueado"
+      @validar_Storage="validar_Storage"
+    />
 
     <v-main>
       <router-view />
@@ -57,7 +61,10 @@
                   <v-list-item-title>Inicio</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-list-item @click="rutas_redireccion('ingresar')">
+              <v-list-item
+                v-if="!usuarioLogueado"
+                @click="rutas_redireccion('ingresar')"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-login</v-icon>
                 </v-list-item-icon>
@@ -65,12 +72,26 @@
                   <v-list-item-title>Ingresar</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-list-item @click="rutas_redireccion('insertar')">
+              <v-list-item
+                v-if="!usuarioLogueado"
+                @click="rutas_redireccion('insertar')"
+              >
                 <v-list-item-icon>
                   <v-icon>mdi-account-plus-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Registrarse</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item
+                v-if="usuarioLogueado"
+                @click="rutas_redireccion('insertar')"
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-exit-to-app</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Cerrar Sesion</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -98,11 +119,16 @@ export default {
 
   data: () => ({
     dialog: false,
+    usuarioLogueado: false,
   }),
+  beforeUpdate() {
+    this.validar_Storage();
+  },
   methods: {
     dialog_movile() {
       this.dialog = true;
     },
+
     rutas_redireccion(item) {
       switch (item) {
         case "home":
@@ -117,6 +143,14 @@ export default {
           this.$router.push("/insertar");
           this.dialog = false;
           break;
+      }
+    },
+    /** Valida que si existe el token de acceso */
+    validar_Storage() {
+      if (localStorage.acces_token) {
+        this.usuarioLogueado = true;
+      } else {
+        this.usuarioLogueado = false;
       }
     },
   },

@@ -1,6 +1,6 @@
 <template>
   <v-container class="responsive-header">
-    <v-app-bar app color="#f8f9f9" flat class="flex-column">
+    <v-app-bar elevation="3" app color="#f8f9f9" flat class="flex-column">
       <!--Barra de Navegacion.-->
       <v-toolbar color="#f8f9f9" flat>
         <!--Titulo y logo-->
@@ -30,32 +30,64 @@
             <router-link to="/" class="text-rutas">Inicio</router-link>
           </v-btn>
 
-          <v-btn text>
+          <v-btn v-if="!usuarioLogueado" text>
             <router-link to="/ingresar" class="text-rutas"
               >Ingresar</router-link
             >
           </v-btn>
 
-          <v-btn text>
+          <v-btn v-if="!usuarioLogueado" text>
             <router-link to="/insertar" class="text-rutas"
               >Registrarse</router-link
             >
           </v-btn>
+          <v-tooltip v-if="usuarioLogueado" bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn @click="cerrar_sesion" text v-bind="attrs" v-on="on">
+                <v-icon>mdi-exit-to-app</v-icon>
+              </v-btn>
+            </template>
+            <span>Cerrar Sesion</span>
+          </v-tooltip>
         </v-toolbar-items>
       </v-toolbar>
     </v-app-bar>
   </v-container>
 </template>
 <script>
+import GlobalServices from "../components/services/globalServices";
+import SecureLS from "secure-ls";
+
 export default {
   name: "HeaderView",
+  props: ["usuarioLogueado"],
 
   data: () => ({
     dialog: false,
+    //usuarioLogueado: false,
   }),
+  beforeMount() {
+    this.$emit("validar_Storage");
+  },
   methods: {
     dialog_movile() {
       this.$emit("dialog_movile");
+    },
+    async cerrar_sesion() {
+      await GlobalServices.CerrarSesion()
+        .then((response) => {
+          if (response.data.status == 1) {
+            var ls = new SecureLS();
+            ls.remove("acces_token");
+            this.$router.push({
+              name: "ingresar",
+            });
+            this.$emit("validar_Storage");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

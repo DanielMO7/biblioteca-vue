@@ -18,12 +18,12 @@
                       >
                     </li>
                     <li>
-                      <router-link to="/about" class="text-rutas-footer"
+                      <router-link to="/ingresar" class="text-rutas-footer"
                         >Ingresar</router-link
                       >
                     </li>
                     <li>
-                      <router-link to="/" class="text-rutas-footer"
+                      <router-link to="/insertar" class="text-rutas-footer"
                         >Registrarse</router-link
                       >
                     </li>
