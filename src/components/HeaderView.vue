@@ -55,16 +55,16 @@
   </v-container>
 </template>
 <script>
-import GlobalServices from "../components/services/globalServices";
-import SecureLS from "secure-ls";
+// import GlobalServices from "../components/services/globalServices";
+// import SecureLS from "secure-ls";
 
 export default {
   name: "HeaderView",
+  // Verifica si el usuario se encuentra logueado
   props: ["usuarioLogueado"],
 
   data: () => ({
     dialog: false,
-    //usuarioLogueado: false,
   }),
   beforeMount() {
     this.$emit("validar_Storage");
@@ -74,20 +74,7 @@ export default {
       this.$emit("dialog_movile");
     },
     async cerrar_sesion() {
-      await GlobalServices.CerrarSesion()
-        .then((response) => {
-          if (response.data.status == 1) {
-            var ls = new SecureLS();
-            ls.remove("acces_token");
-            this.$router.push({
-              name: "ingresar",
-            });
-            this.$emit("validar_Storage");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.$emit("cerrar_sesion");
     },
   },
 };
