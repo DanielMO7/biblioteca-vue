@@ -1,6 +1,14 @@
 <template>
   <v-container>
-    <v-row>
+    <!-- Esqueleto en caso de que el usuario este logueado -->
+    <v-skeleton-loader
+      v-if="loading_skeleto"
+      class="mx-auto"
+      max-width="400"
+      height="400"
+      type="card"
+    ></v-skeleton-loader>
+    <v-row v-if="!loading_register && !loading_skeleto">
       <v-col class="d-flex justify-center mb-5">
         <v-card width="400" elevation="9">
           <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
@@ -149,6 +157,36 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row v-else>
+      <v-col class="d-flex justify-center mb-5">
+        <v-card width="400" height="400" elevation="9">
+          <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
+            <v-card-title>REGISTRARSE</v-card-title>
+          </v-toolbar>
+          <v-card height="88%" class="d-flex align-center mb-5">
+            <v-container>
+              <v-card-text>
+                <v-row>
+                  <v-col class="d-flex justify-center"
+                    ><v-progress-circular
+                      :size="100"
+                      :width="12"
+                      color="#a52a2a"
+                      indeterminate
+                    ></v-progress-circular>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="d-flex justify-center">
+                    <v-card-title>Cargando...</v-card-title>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-container>
+          </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
@@ -169,6 +207,7 @@ export default {
 
     // Loadings:
     loading_register: false,
+    loading_skeleto: false,
 
     // Variables del Formulario:
     nombre: "",
@@ -192,7 +231,14 @@ export default {
       (v) => /.+@.+\..+/.test(v) || "E-mail es inválido",
     ],
   }),
-
+  beforeMount() {
+    if (localStorage.acces_token) {
+      this.$router.push({
+        name: "home",
+      });
+      this.loading_skeleto = true;
+    }
+  },
   methods: {
     /**
      * Verifica que las contraseñas sean iguales.
