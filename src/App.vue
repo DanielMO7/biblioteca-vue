@@ -5,6 +5,7 @@
       @dialog_movile="dialog_movile"
       :usuarioLogueado="usuarioLogueado"
       @validar_Storage="validar_Storage"
+      @cerrar_sesion="cerrar_sesion"
     />
 
     <v-main>
@@ -83,10 +84,7 @@
                   <v-list-item-title>Registrarse</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-list-item
-                v-if="usuarioLogueado"
-                @click="rutas_redireccion('insertar')"
-              >
+              <v-list-item v-if="usuarioLogueado" @click="cerrar_sesion()">
                 <v-list-item-icon>
                   <v-icon>mdi-exit-to-app</v-icon>
                 </v-list-item-icon>
@@ -108,6 +106,9 @@
 <script>
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
+import globalServices from "./components/services/globalServices";
+import SecureLS from "secure-ls";
+import Swal from "sweetalert2";
 
 export default {
   name: "App",
@@ -144,6 +145,36 @@ export default {
           this.dialog = false;
           break;
       }
+    },
+    async cerrar_sesion() {
+      Swal.fire({
+        icon: "info",
+        title: "¿Continuar Cierre de Sesión?",
+        showDenyButton: true,
+        confirmButtonText: "Sí",
+        denyButtonText: `Cancelar`,
+      }).then(async (result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+          await globalServices
+            .CerrarSesion()
+            .then((response) => {
+              if (response.data.status == 1) {
+                var ls = new SecureLS();
+                ls.remove("acces_token");
+                this.$router.push({
+                  name: "ingresar",
+                });
+                this.validar_Storage();
+                this.dialog = false;
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+          Swal.fire("¡Sesión Cerrada con Éxito!", "", "success");
+        }
+      });
     },
     /** Valida que si existe el token de acceso */
     validar_Storage() {
