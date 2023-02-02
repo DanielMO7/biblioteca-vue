@@ -1,6 +1,15 @@
 <template>
   <v-container>
-    <v-row>
+    <!-- Esqueleto en caso de que el usuario este logueado -->
+    <v-skeleton-loader
+      v-if="loading_skeleto"
+      class="mx-auto"
+      max-width="400"
+      height="400"
+      type="card"
+    ></v-skeleton-loader>
+
+    <v-row v-if="!loading_login && !loading_skeleto">
       <v-col class="d-flex justify-center mb-5">
         <v-card width="400" height="400" elevation="9">
           <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
@@ -81,6 +90,36 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row v-else>
+      <v-col class="d-flex justify-center mb-5">
+        <v-card width="400" height="400" elevation="9">
+          <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
+            <v-card-title>INICIAR SESION</v-card-title>
+          </v-toolbar>
+          <v-card height="88%" class="d-flex align-center mb-5">
+            <v-container>
+              <v-card-text>
+                <v-row>
+                  <v-col class="d-flex justify-center"
+                    ><v-progress-circular
+                      :size="100"
+                      :width="12"
+                      color="#a52a2a"
+                      indeterminate
+                    ></v-progress-circular>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="d-flex justify-center">
+                    <v-card-title>Cargando...</v-card-title>
+                  </v-col>
+                </v-row>
+              </v-card-text>
+            </v-container>
+          </v-card>
+        </v-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script>
@@ -88,8 +127,11 @@ import Swal from "sweetalert2";
 import Services from "./services/LoginServices";
 import SecureLS from "secure-ls";
 export default {
+  props: ["usuarioLogueado"],
   data: () => ({
     valid: true,
+    loading_login: false,
+    loading_skeleto: false,
 
     vista_icono_contrasena: false,
     no_registrado: false,
@@ -108,7 +150,14 @@ export default {
       min: (v) => v.length >= 8 || "Mínimo 8 caracteres",
     },
   }),
-
+  beforeMount() {
+    if (localStorage.acces_token) {
+      this.$router.push({
+        name: "home",
+      });
+      this.loading_skeleto = true;
+    }
+  },
   methods: {
     validate() {
       this.$refs.form.validate();
@@ -117,17 +166,19 @@ export default {
       this.$router.push("/");
     },
     async ingresar() {
+      this.loading_login = true;
       await Services.IniciarSesion({
         email: this.email,
         password: this.password,
       })
         .then((response) => {
-          if (response.data.status == 2) {
+          this.loading_login = false;
+          if (response.data.status == 0) {
             this.no_registrado = true;
             this.loading_register = false;
             setTimeout(() => (this.no_registrado = false), 5000);
           }
-          if (response.data.status == 1) {
+          if (response.data.status == 2) {
             this.registrado = true;
             this.loading_register = false;
             setTimeout(() => (this.registrado = false), 5000);
@@ -135,12 +186,20 @@ export default {
           if (response.data.status == 1) {
             var ls = new SecureLS();
             ls.set("acces_token", { data: response.data.access_token });
-            this.$router.push("/");
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "¡Bienvenido!",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+            setTimeout(() => this.$router.push("/"), 1500);
           }
         })
         .catch((error) => {
           Swal.fire("Ah ocurrido un error, por favor verifica la información.");
           console.log(error);
+          this.loading_login = false;
         });
     },
   },
