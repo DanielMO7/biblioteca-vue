@@ -38,15 +38,14 @@
 
                 <v-card-text id="footer">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.786395626372!2d-75.68515578480925!3d4.80670044206668!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e38873c6960ab4f%3A0x623728cab0c2291b!2sRED%20MEDICA%20VITAL!5e0!3m2!1ses!2sco!4v1657211534672!5m2!1ses!2sco"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.7406217336356!2d-75.69599528523725!3d4.814538696503754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e388748f3f7387b%3A0xcc5ece4ce1a5dafe!2sAlcald%C3%ADa%20de%20Pereira!5e0!3m2!1ses-419!2sco!4v1675376367109!5m2!1ses-419!2sco"
                     width="600"
                     height="450"
                     style="border: 0"
                     allowfullscreen=""
                     loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"
-                  >
-                  </iframe>
+                  ></iframe>
                 </v-card-text>
               </v-card>
             </v-col>
