@@ -24,12 +24,19 @@ const routes = [
     path: '/about',
     name: 'about',
     component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+  },
+  {
+    path: '*',
+    name: 'about',
+    component: () => import(/* webpackChunkName: "about" */ '../views/404View.vue')
   }
+
 ]
 
 const router = new VueRouter({
   mode:'history',
   routes
 })
+
 
 export default router
