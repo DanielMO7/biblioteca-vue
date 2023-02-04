@@ -55,9 +55,6 @@
   </v-container>
 </template>
 <script>
-// import GlobalServices from "../components/services/globalServices";
-// import SecureLS from "secure-ls";
-
 export default {
   name: "HeaderView",
   // Verifica si el usuario se encuentra logueado
@@ -66,27 +63,34 @@ export default {
   data: () => ({
     dialog: false,
   }),
+  // Antes de que se monten los elementos se emite el evento que valida que si el usuario esta logueado.
   beforeMount() {
+    // Evento que valida si el usuario se encuentra logueado.
     this.$emit("validar_Storage");
   },
   methods: {
     dialog_movile() {
+      // Evento que muestra el dialog que contiene el menú para moviles.
       this.$emit("dialog_movile");
     },
     async cerrar_sesion() {
+      // Evento que permite borrar el token de acceso y cierra la sesion.
       this.$emit("cerrar_sesion");
     },
   },
 };
 </script>
 <style scoped>
+/* La etiqueta con esta clase no debe mostrarse normalmente */
 .reponsive_barra_navegacion {
   display: none;
 }
+/* Si la pantalla tiene menos de 750px entonces se debe mostrar el contenido de moviles. */
 @media (max-width: 750px) {
   .reponsive_barra_navegacion {
     display: contents;
   }
+  /* Quita los links que no deben mostrarse en una pantalla normal. */
   .responsive_links {
     display: none;
   }

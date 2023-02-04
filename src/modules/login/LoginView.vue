@@ -8,9 +8,10 @@
       height="400"
       type="card"
     ></v-skeleton-loader>
-
+    <!-- Contenido del login si el usuario no se encuentra autenticado. -->
     <v-row v-if="!loading_login && !loading_skeleto">
       <v-col class="d-flex justify-center mb-5">
+        <!-- Card de Inicio de Sesion -->
         <v-card width="400" height="400" elevation="9">
           <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
             <v-card-title>INICIAR SESION</v-card-title>
@@ -20,6 +21,7 @@
               <v-form ref="form" v-model="valid" lazy-validation>
                 <v-row>
                   <v-col>
+                    <!-- Campo Email -->
                     <v-text-field
                       width=""
                       v-model="email"
@@ -33,6 +35,7 @@
                 </v-row>
                 <v-row>
                   <v-col>
+                    <!-- Campo contraseña -->
                     <v-text-field
                       v-model="password"
                       :append-icon="
@@ -52,6 +55,7 @@
                     ></v-text-field>
                   </v-col>
                 </v-row>
+                <!-- Alerts que muestran algún error en la peticion del usuario. -->
                 <v-alert v-if="no_registrado" dense outlined type="error">
                   El usuario <strong>no se encuentra</strong> registrado, por
                   favor, <strong>revisa</strong> la informacion.
@@ -90,8 +94,10 @@
         </v-card>
       </v-col>
     </v-row>
+    <!-- Contenido del login que muestra una barra de carga mientras se procesa una peticion. -->
     <v-row v-else>
       <v-col class="d-flex justify-center mb-5">
+        <!-- Card de loading -->
         <v-card width="400" height="400" elevation="9">
           <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
             <v-card-title>INICIAR SESION</v-card-title>
@@ -100,6 +106,7 @@
             <v-container>
               <v-card-text>
                 <v-row>
+                  <!-- Circulo de progresa mientras se procesa la informacion -->
                   <v-col class="d-flex justify-center"
                     ><v-progress-circular
                       :size="100"
@@ -110,6 +117,7 @@
                   </v-col>
                 </v-row>
                 <v-row>
+                  <!-- Texto mientras se procesa la peticion. -->
                   <v-col class="d-flex justify-center">
                     <v-card-title>Cargando...</v-card-title>
                   </v-col>
@@ -127,31 +135,41 @@ import Swal from "sweetalert2";
 import Services from "./services/LoginServices";
 import SecureLS from "secure-ls";
 export default {
+  // Propiedad que valida si el usuario esta logueado
   props: ["usuarioLogueado"],
   data: () => ({
+    // Valid del Formulario
     valid: true,
+
+    // Loadings
     loading_login: false,
     loading_skeleto: false,
 
     vista_icono_contrasena: false,
+
+    // Variables de los alerts por si se presenta algún error.
     no_registrado: false,
     registrado: false,
 
+    // Variables Formulario y Reglas de cada uno
     password: "12345678",
     passwordRules: [(v) => !!v || "La contraseña es requerida"],
+    reglas_password: {
+      required: (value) => !!value || "La contraseña es requerida.",
+      min: (v) => v.length >= 8 || "Mínimo 8 caracteres",
+    },
+
     email: "daniel@gmail.com",
     emailRules: [
       (v) => !!v || "E-mail es requerido",
       (v) => /.+@.+\..+/.test(v) || "E-mail es invalido",
     ],
-
-    reglas_password: {
-      required: (value) => !!value || "La contraseña es requerida.",
-      min: (v) => v.length >= 8 || "Mínimo 8 caracteres",
-    },
   }),
+  // Antes de mostrar los elementos, valida si el usuario esta logueado.
   beforeMount() {
+    // Verifica si existe un token de acceso
     if (localStorage.acces_token) {
+      // Si existe retorna al usuario home
       this.$router.push({
         name: "home",
       });
@@ -159,48 +177,64 @@ export default {
     }
   },
   methods: {
-    validate() {
-      this.$refs.form.validate();
-    },
+    // Envia al usuario al inicio
     cancelar() {
-      this.$router.push("/");
+      this.$router.go(-1);
     },
+    // Funcion que pemite iniciar sesion.
     async ingresar() {
       this.loading_login = true;
-      await Services.IniciarSesion({
-        email: this.email,
-        password: this.password,
-      })
-        .then((response) => {
-          this.loading_login = false;
-          if (response.data.status == 0) {
-            this.no_registrado = true;
-            this.loading_register = false;
-            setTimeout(() => (this.no_registrado = false), 5000);
-          }
-          if (response.data.status == 2) {
-            this.registrado = true;
-            this.loading_register = false;
-            setTimeout(() => (this.registrado = false), 5000);
-          }
-          if (response.data.status == 1) {
-            var ls = new SecureLS();
-            ls.set("acces_token", { data: response.data.access_token });
-            Swal.fire({
-              position: "center",
-              icon: "success",
-              title: "¡Bienvenido!",
-              showConfirmButton: false,
-              timer: 1500,
-            });
-            setTimeout(() => this.$router.push("/"), 1500);
-          }
+      // Valida que la informacion del fomulario este correctamente.
+      if (this.$refs.form.validate()) {
+        // Servicio que envia la peticion de inicio de sesion con las credenciales necesarias.
+        await Services.IniciarSesion({
+          email: this.email,
+          password: this.password,
         })
-        .catch((error) => {
-          Swal.fire("Ah ocurrido un error, por favor verifica la información.");
-          console.log(error);
-          this.loading_login = false;
-        });
+          .then((response) => {
+            this.loading_register = false;
+            // Status 0 || El usuario no se encuentra registrado.
+            if (response.data.status == 0) {
+              // Se muestra un alert por 5 segundos.
+              this.no_registrado = true;
+              setTimeout(() => (this.no_registrado = false), 5000);
+            }
+            // Status 2 || El usuario escribio mal la contraseña.
+            if (response.data.status == 2) {
+              // Se muestra un alert por 5 segundos.
+              this.registrado = true;
+              setTimeout(() => (this.registrado = false), 5000);
+            }
+            // Status 1 || El usuario inicio sesion correctamente.
+            if (response.data.status == 1) {
+              // Se crea una variable de encriptacion del local storage.
+              var ls = new SecureLS();
+              // Se crea un nuevo elemento del LS con la key y el valor a encriptar, en este caso el
+              // token que se nos envia en el reponse.
+              ls.set("acces_token", { data: response.data.access_token });
+              Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "¡Bienvenido!",
+                showConfirmButton: false,
+                timer: 1500,
+              });
+              // Se envia al usuario al home despues de loguearse.
+              setTimeout(() => this.$router.push("/"), 1500);
+            }
+          })
+          .catch((error) => {
+            // Error del lado del servidor.
+            Swal.fire(
+              "Ah ocurrido un error, por favor verifica la información."
+            );
+            console.log(error);
+            this.loading_login = false;
+          });
+      } else {
+        // Desactiva el loading.
+        this.loading_login = false;
+      }
     },
   },
 };

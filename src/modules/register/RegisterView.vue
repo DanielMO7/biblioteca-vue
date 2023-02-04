@@ -8,8 +8,10 @@
       height="400"
       type="card"
     ></v-skeleton-loader>
+    <!-- Contenido en caso de que el usaurio no este logueado. -->
     <v-row v-if="!loading_register && !loading_skeleto">
       <v-col class="d-flex justify-center mb-5">
+        <!-- Card que contiene el formulario de registro -->
         <v-card width="400" elevation="9">
           <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
             <v-card-title> REGISTRARSE </v-card-title>
@@ -157,8 +159,10 @@
         </v-card>
       </v-col>
     </v-row>
+    <!-- Contenido de loading mientras se procesa una peticion. -->
     <v-row v-else>
       <v-col class="d-flex justify-center mb-5">
+        <!-- Card que muestra el loading del formulario. -->
         <v-card width="400" height="400" elevation="9">
           <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
             <v-card-title>REGISTRARSE</v-card-title>
@@ -195,6 +199,7 @@ import Swal from "sweetalert2";
 
 export default {
   data: () => ({
+    // Variables que muestran el icono de la contraseña.
     vista_icono_contrasena: false,
     vista_icono_contrasena_verify: false,
 
@@ -231,8 +236,11 @@ export default {
       (v) => /.+@.+\..+/.test(v) || "E-mail es inválido",
     ],
   }),
+  // Antes de montarsen los elementos se valida si el usuario esta logueado.
   beforeMount() {
+    // Valida si existe un elemento en el local sotrage
     if (localStorage.acces_token) {
+      // Si existe redirige al usuario al home.
       this.$router.push({
         name: "home",
       });
@@ -253,7 +261,7 @@ export default {
      * Retorna a la ruta de inicio.
      */
     cancelar() {
-      this.$router.push("/");
+      this.$router.go(-1);
     },
     /**
      * Permite verificar la informacion ingresada y envia la peticion
