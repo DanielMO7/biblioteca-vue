@@ -106,15 +106,17 @@
       </v-card>
     </v-dialog>
     <!-- Dialog que muestra un loading mientras se cierra la sesion. -->
-    <v-dialog v-model="dialog_loading" scrollable persistent width="120">
-      <v-card height="120" dark>
-        <v-col class="d-flex justify-center align-center"
+    <v-dialog v-model="dialog_loading" scrollable persistent width="170">
+      <v-card height="170">
+        <v-col class="d-flex justify-center align-center mt-3"
           ><v-progress-circular
-            :width="3"
-            color="red"
+            :width="7"
+            :size="77"
+            color="#a52a2a"
             indeterminate
           ></v-progress-circular
         ></v-col>
+        <v-col class="d-flex justify-center align-center"> Cargando... </v-col>
       </v-card>
     </v-dialog>
   </v-app>
