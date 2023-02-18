@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-card class="d-flex align-center justify-center mb-6" height="450">
-      <v-continer>
+      <v-container>
         <v-row>
           <v-col
             style="font-size: 100px"
@@ -18,7 +18,7 @@
             Esta pagina no Funciona.
           </v-col>
         </v-row>
-      </v-continer>
+      </v-container>
     </v-card>
   </v-container>
 </template>
