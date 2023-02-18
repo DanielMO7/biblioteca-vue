@@ -41,12 +41,10 @@
                       :append-icon="
                         vista_icono_contrasena ? 'mdi-eye' : 'mdi-eye-off'
                       "
-                      :rules="[reglas_password.required, reglas_password.min]"
+                      :rules="[reglas_password.required]"
                       :type="vista_icono_contrasena ? 'text' : 'password'"
                       name="input-10-1"
                       label="Contraseña"
-                      hint="La contraseña debe contener 8 caracteres."
-                      counter
                       outlined
                       dense
                       @click:append="
@@ -152,14 +150,13 @@ export default {
     registrado: false,
 
     // Variables Formulario y Reglas de cada uno
-    password: "12345678",
+    password: "",
     passwordRules: [(v) => !!v || "La contraseña es requerida"],
     reglas_password: {
       required: (value) => !!value || "La contraseña es requerida.",
-      min: (v) => v.length >= 8 || "Mínimo 8 caracteres",
     },
 
-    email: "daniel@gmail.com",
+    email: "",
     emailRules: [
       (v) => !!v || "E-mail es requerido",
       (v) => /.+@.+\..+/.test(v) || "E-mail es invalido",
@@ -194,13 +191,13 @@ export default {
           .then((response) => {
             this.loading_register = false;
             // Status 0 || El usuario no se encuentra registrado.
-            if (response.data.status == 0) {
+            if (response.data.status == 2) {
               // Se muestra un alert por 5 segundos.
               this.no_registrado = true;
               setTimeout(() => (this.no_registrado = false), 5000);
             }
             // Status 2 || El usuario escribio mal la contraseña.
-            if (response.data.status == 2) {
+            if (response.data.status == 0) {
               // Se muestra un alert por 5 segundos.
               this.registrado = true;
               setTimeout(() => (this.registrado = false), 5000);
@@ -222,14 +219,16 @@ export default {
               // Se envia al usuario al home despues de loguearse.
               setTimeout(() => this.$router.push("/"), 1500);
             }
+            this.loading_login = false;
           })
           .catch((error) => {
-            // Error del lado del servidor.
             Swal.fire(
               "Ah ocurrido un error, por favor verifica la información."
             );
             console.log(error);
+
             this.loading_login = false;
+            // Error del lado del servidor.
           });
       } else {
         // Desactiva el loading.
