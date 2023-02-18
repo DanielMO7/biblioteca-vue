@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="!loading_page">
     <v-card
       class="mx-auto d-flex flex-column justify-space-between align-center"
       id="banner"
@@ -59,6 +59,25 @@
       </v-card>
     </v-card>
   </v-container>
+  <v-container v-else>
+    <div class="d-flex justify-center">
+      <v-card class="d-flex align-center" width="450" height="450">
+        <v-row>
+          <v-col cols="12" class="d-flex justify-center">
+            <v-progress-circular
+              :width="7"
+              :size="77"
+              color="#a52a2a"
+              indeterminate
+            ></v-progress-circular>
+          </v-col>
+          <v-col cols="12" class="d-flex justify-center">
+            <v-card-title>Cargando.</v-card-title>
+          </v-col>
+        </v-row>
+      </v-card>
+    </div>
+  </v-container>
 </template>
 <script>
 import ServicesHome from "./services/ServicesHome";
@@ -66,18 +85,21 @@ import ServicesHome from "./services/ServicesHome";
 export default {
   data: () => ({
     frase_home: "",
+    loading_page: false,
   }),
   async created() {
+    this.loading_page = true;
     // ServiceHome || Trae las fraces que se muestran en el home principal.
     await ServicesHome.FrasesHome()
       .then((response) => {
-        console.log(response.data);
         // Funcion que toma un index random del array que contiene la frase.
         this.frase_home =
           response.data[Math.floor(Math.random() * response.data.length)].frase;
+        this.loading_page = false;
       })
       .catch((error) => {
         console.log(error);
+        this.loading_page = false;
       });
   },
   methods: {},
