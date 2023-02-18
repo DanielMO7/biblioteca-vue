@@ -13,7 +13,7 @@
     </v-main>
 
     <!--Footer-->
-    <FooterView />
+    <FooterView :usuarioLogueado="usuarioLogueado" />
 
     <!-- Dialog que muestra el menu en dispositivos moviles -->
     <v-dialog
