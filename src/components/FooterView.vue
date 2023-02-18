@@ -17,12 +17,12 @@
                         >Inicio</router-link
                       >
                     </li>
-                    <li>
+                    <li v-if="!usuarioLogueado">
                       <router-link to="/ingresar" class="text-rutas-footer"
                         >Ingresar</router-link
                       >
                     </li>
-                    <li>
+                    <li v-if="!usuarioLogueado">
                       <router-link to="/insertar" class="text-rutas-footer"
                         >Registrarse</router-link
                       >
@@ -79,6 +79,7 @@
 <script>
 export default {
   name: "FooterView",
+  props: ["usuarioLogueado"],
 
   data: () => ({
     icons: ["mdi-facebook", "mdi-twitter", "mdi-linkedin", "mdi-instagram"],
