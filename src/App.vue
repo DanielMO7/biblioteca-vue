@@ -214,9 +214,24 @@ export default {
       });
     },
     /** Valida que si existe el token de acceso */
-    validar_Storage() {
+    async validar_Storage() {
       if (localStorage.acces_token) {
-        this.usuarioLogueado = true;
+        // Verifica que el token funcione correctamente
+        await globalServices
+          .ValidarToken()
+          .then((response) => {
+            // Status 1 || Todo salio correctamente
+            if (response.data == 1) {
+              this.usuarioLogueado = true;
+            }
+          })
+          // Si nos muestra un catch error significa que el token no funciona entonces se elimina.
+          .catch((error) => {
+            var ls = new SecureLS();
+            ls.remove("acces_token");
+            this.usuarioLogueado = false;
+            console.log(error);
+          });
       } else {
         this.usuarioLogueado = false;
       }
