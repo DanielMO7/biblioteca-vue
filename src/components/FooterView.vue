@@ -1,78 +1,67 @@
 <template>
   <v-footer padless>
     <!--Cards del Footer-->
-    <v-card class="flex" flat tile>
-      <div>
-        <v-card class="mb-6" flat tile dark>
-          <v-row style="'justify-content:center;'">
-            <!--Card Menu-->
-            <v-col cols="12" sm="6" lg="4">
-              <v-card class="mx-auto" max-width="400" width="318" height="300">
-                <v-card-title id="titulo-footer">Menu</v-card-title>
-
-                <v-card-text id="footer">
-                  <ul>
-                    <li>
-                      <router-link to="/" class="text-rutas-footer"
-                        >Inicio</router-link
-                      >
-                    </li>
-                    <li v-if="!usuarioLogueado">
-                      <router-link to="/ingresar" class="text-rutas-footer"
-                        >Ingresar</router-link
-                      >
-                    </li>
-                    <li v-if="!usuarioLogueado">
-                      <router-link to="/insertar" class="text-rutas-footer"
-                        >Registrarse</router-link
-                      >
-                    </li>
-                  </ul>
-                </v-card-text>
-              </v-card>
-            </v-col>
-            <!--Card Donde Estamos-->
-            <v-col cols="12" sm="6" lg="4">
-              <v-card class="mx-auto" max-width="400" width="318" height="300">
-                <v-card-title id="titulo-footer">¿DONDE ESTAMOS?</v-card-title>
-
-                <v-card-text id="footer">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.7406217336356!2d-75.69599528523725!3d4.814538696503754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e388748f3f7387b%3A0xcc5ece4ce1a5dafe!2sAlcald%C3%ADa%20de%20Pereira!5e0!3m2!1ses-419!2sco!4v1675376367109!5m2!1ses-419!2sco"
-                    width="600"
-                    height="450"
-                    style="border: 0"
-                    allowfullscreen=""
-                    loading="lazy"
-                    referrerpolicy="no-referrer-when-downgrade"
-                  ></iframe>
-                </v-card-text>
-              </v-card>
-            </v-col>
-            <!--Card Autor-->
-            <v-col cols="12" sm="6" lg="4">
-              <v-card class="mx-auto" max-width="400" width="318" height="300">
-                <v-card-title id="titulo-footer">AUTOR</v-card-title>
-
-                <v-card-text id="footer">
-                  <p id="copy-name">&copy; Daniel Mendez</p>
-                  <v-btn
-                    v-for="icon in icons"
-                    :key="icon"
-                    class="mx-4"
-                    dark
-                    icon
+    <v-card class="flex" dark flat tile>
+      <v-row class="mb-0 mt-2 mr-0">
+        <!--Card Menu-->
+        <v-col cols="12" sm="6" lg="4">
+          <v-card class="mx-auto" max-width="400" width="318" height="300">
+            <v-card-title id="titulo-footer">Menu</v-card-title>
+            <v-card-text id="footer">
+              <ul>
+                <li>
+                  <router-link to="/" class="text-rutas-footer"
+                    >Inicio</router-link
                   >
-                    <v-icon size="24px">
-                      {{ icon }}
-                    </v-icon>
-                  </v-btn>
-                </v-card-text>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card>
-      </div>
+                </li>
+                <li v-if="!usuarioLogueado">
+                  <router-link to="/ingresar" class="text-rutas-footer"
+                    >Ingresar</router-link
+                  >
+                </li>
+                <li v-if="!usuarioLogueado">
+                  <router-link to="/insertar" class="text-rutas-footer"
+                    >Registrarse</router-link
+                  >
+                </li>
+              </ul>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <!--Card Donde Estamos-->
+        <v-col cols="12" sm="6" lg="4">
+          <v-card class="mx-auto" max-width="400" width="318" height="300">
+            <v-card-title id="titulo-footer">¿DONDE ESTAMOS?</v-card-title>
+
+            <v-card-text id="footer">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3975.7406217336356!2d-75.69599528523725!3d4.814538696503754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8e388748f3f7387b%3A0xcc5ece4ce1a5dafe!2sAlcald%C3%ADa%20de%20Pereira!5e0!3m2!1ses-419!2sco!4v1675376367109!5m2!1ses-419!2sco"
+                width="600"
+                height="450"
+                style="border: 0"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+              ></iframe>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <!--Card Autor-->
+        <v-col cols="12" sm="6" lg="4">
+          <v-card class="mx-auto" max-width="400" width="318" height="300">
+            <v-card-title id="titulo-footer">AUTOR</v-card-title>
+
+            <v-card-text id="footer">
+              <p id="copy-name">&copy; Daniel Mendez</p>
+              <v-btn v-for="icon in icons" :key="icon" class="mx-4" dark icon>
+                <v-icon size="24px">
+                  {{ icon }}
+                </v-icon>
+              </v-btn>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-card>
   </v-footer>
 </template>
