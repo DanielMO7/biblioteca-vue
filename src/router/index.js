@@ -20,11 +20,17 @@ const routes = [
     name: 'insertar',
     component: () => import(/* webpackChunkName: "insertar" */ '../modules/register/RegisterView.vue')
   },
+   {
+    path: '/perfil',
+    name: 'perfil_usuario',
+    component: () => import(/* webpackChunkName: "about" */ '../modules/perfil_usuario/PerfilUser.vue')
+  },
   {
     path: '*',
     name: 'about',
     component: () => import(/* webpackChunkName: "about" */ '../views/404View.vue')
   }
+ 
 
 ]
 
