@@ -132,6 +132,8 @@
 import Swal from "sweetalert2";
 import Services from "./services/LoginServices";
 import SecureLS from "secure-ls";
+import PerfilServices from "@/modules/perfil_usuario/services/PerfilServices";
+
 export default {
   // Propiedad que valida si el usuario esta logueado
   props: ["usuarioLogueado"],
@@ -150,13 +152,13 @@ export default {
     registrado: false,
 
     // Variables Formulario y Reglas de cada uno
-    password: "",
+    password: "12345678",
     passwordRules: [(v) => !!v || "La contraseña es requerida"],
     reglas_password: {
       required: (value) => !!value || "La contraseña es requerida.",
     },
 
-    email: "",
+    email: "daniel@gmail.com",
     emailRules: [
       (v) => !!v || "E-mail es requerido",
       (v) => /.+@.+\..+/.test(v) || "E-mail es invalido",
@@ -188,7 +190,7 @@ export default {
           email: this.email,
           password: this.password,
         })
-          .then((response) => {
+          .then(async (response) => {
             this.loading_register = false;
             // Status 0 || El usuario no se encuentra registrado.
             if (response.data.status == 2) {
@@ -209,6 +211,30 @@ export default {
               // Se crea un nuevo elemento del LS con la key y el valor a encriptar, en este caso el
               // token que se nos envia en el reponse.
               ls.set("acces_token", { data: response.data.access_token });
+              // Trae los datos del usuario
+              await PerfilServices.PerfilUsuario().then((response) => {
+                let data_user = response.data.data;
+                //charAt(0) | Selecciona el primer caracter de un string.
+                let iniciales_nombre = data_user.name.charAt(0);
+                // Verificamos el nombre de cada rol
+                if (data_user.rol == 1) {
+                  data_user.rol_nombre = "Administrador";
+                } else if (data_user.rol == 2) {
+                  data_user.rol_nombre = "Usuario";
+                }
+                data_user.iniciales_nombre = iniciales_nombre;
+                // Asignamos los datos al local storage encriptado
+                ls.set("profile_user", {
+                  data: {
+                    nombre: data_user.name,
+                    documento: data_user.documento,
+                    email: data_user.email,
+                    rol: data_user.rol,
+                    rol_nombre: data_user.rol_nombre,
+                    iniciales_nombre: data_user.iniciales_nombre,
+                  },
+                });
+              });
               Swal.fire({
                 position: "center",
                 icon: "success",
@@ -216,6 +242,7 @@ export default {
                 showConfirmButton: false,
                 timer: 1500,
               });
+
               // Se envia al usuario al home despues de loguearse.
               setTimeout(() => this.$router.push("/"), 1500);
             }
