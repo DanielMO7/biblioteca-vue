@@ -4,6 +4,7 @@
     <HeaderView
       @dialog_movile="dialog_movile"
       :usuarioLogueado="usuarioLogueado"
+      :user="user"
       @validar_Storage="validar_Storage"
       @cerrar_sesion="cerrar_sesion"
     />
@@ -63,6 +64,18 @@
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Inicio</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <!-- Ruta de direccion al perfil -->
+              <v-list-item
+                v-if="usuarioLogueado"
+                @click="rutas_redireccion('perfil')"
+              >
+                <v-list-item-icon>
+                  <v-icon>mdi-account</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Perfil</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
               <!-- Ruta de direccion al login -->
@@ -144,6 +157,12 @@ export default {
     dialog: false,
     // Variable que verifica si el usuario esta logueado.
     usuarioLogueado: false,
+    // Variables principales del usuario
+    user: {
+      initials: "null",
+      fullName: "null",
+      email: "null",
+    },
   }),
   // Antes de motrasen los elementos se verifica la informacion del local storage.
   beforeUpdate() {
@@ -168,6 +187,10 @@ export default {
           break;
         case "insertar":
           this.$router.push("/insertar");
+          this.dialog = false;
+          break;
+        case "perfil":
+          this.$router.push("/perfil");
           this.dialog = false;
           break;
       }
@@ -223,6 +246,14 @@ export default {
             // Status 1 || Todo salio correctamente
             if (response.data == 1) {
               this.usuarioLogueado = true;
+              // Verificamos los datos del usuario y lo asignamos a la variable de user
+              if (localStorage.profile_user) {
+                var ls = new SecureLS();
+                let datos = ls.get("profile_user").data;
+                this.user.initials = datos.iniciales_nombre;
+                this.user.fullName = datos.nombre;
+                this.user.email = datos.email;
+              }
             }
           })
           // Si nos muestra un catch error significa que el token no funciona entonces se elimina.
