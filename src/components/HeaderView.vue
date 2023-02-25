@@ -35,20 +35,55 @@
               >Ingresar</router-link
             >
           </v-btn>
+          <!-- Menu de perfil de usuario -->
+          <v-btn v-if="usuarioLogueado" text>
+            <v-row justify="center">
+              <v-menu bottom min-width="200px" rounded offset-y>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon x-large v-on="on">
+                    <v-avatar color="#1E1E1E" size="43">
+                      <span class="white--text text-h5">{{
+                        user.initials
+                      }}</span>
+                    </v-avatar>
+                  </v-btn>
+                </template>
+                <v-card>
+                  <v-list-item-content class="justify-center">
+                    <div class="mx-auto text-center">
+                      <!-- <v-avatar color="brown" size="43">
+                        <span class="white--text text-h5">{{
+                          user.initials
+                        }}</span>
+                      </v-avatar> -->
+                      <h3>{{ user.fullName }}</h3>
+                      <p class="text-caption mt-1">
+                        {{ user.email }}
+                      </p>
+                      <v-divider class="my-3"></v-divider>
+                      <v-btn text>
+                        <router-link to="/perfil" class="text-rutas">
+                          <span>Perfil</span>
+                          <v-icon>mdi-account</v-icon>
+                        </router-link>
+                      </v-btn>
+                      <v-divider class="my-3"></v-divider>
+                      <v-btn @click="cerrar_sesion" text>
+                        <span>Cerrar Sesion </span>
+                        <v-icon>mdi-exit-to-app</v-icon>
+                      </v-btn>
+                    </div>
+                  </v-list-item-content>
+                </v-card>
+              </v-menu>
+            </v-row>
+          </v-btn>
 
           <v-btn v-if="!usuarioLogueado" text>
             <router-link to="/insertar" class="text-rutas"
               >Registrarse</router-link
             >
           </v-btn>
-          <v-tooltip v-if="usuarioLogueado" bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn @click="cerrar_sesion" text v-bind="attrs" v-on="on">
-                <v-icon>mdi-exit-to-app</v-icon>
-              </v-btn>
-            </template>
-            <span>Cerrar Sesion</span>
-          </v-tooltip>
         </v-toolbar-items>
       </v-toolbar>
     </v-app-bar>
@@ -58,7 +93,7 @@
 export default {
   name: "HeaderView",
   // Verifica si el usuario se encuentra logueado
-  props: ["usuarioLogueado"],
+  props: ["usuarioLogueado", "user"],
 
   data: () => ({
     dialog: false,
