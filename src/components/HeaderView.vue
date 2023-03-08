@@ -26,15 +26,26 @@
 
         <!--Items de la Barra de Navegacion.-->
         <v-toolbar-items class="responsive_links">
+          <!-- <v-btn v-if="!usuarioLogueado" text>
+            <router-link to="/insertar" class="text-rutas"
+              >Registrarse</router-link
+            >
+          </v-btn> -->
           <v-btn text>
-            <router-link to="/" class="text-rutas">Inicio</router-link>
+            <router-link
+              to="/"
+              style="color: inherit; line-height: normal; text-decoration: none"
+              >Inicio</router-link
+            >
           </v-btn>
-
           <v-btn v-if="!usuarioLogueado" text>
-            <router-link to="/ingresar" class="text-rutas"
+            <router-link
+              to="/ingresar"
+              style="color: inherit; line-height: normal; text-decoration: none"
               >Ingresar</router-link
             >
           </v-btn>
+
           <!-- Menu de perfil de usuario -->
           <v-btn v-if="usuarioLogueado" text>
             <v-row justify="center">
@@ -79,11 +90,11 @@
             </v-row>
           </v-btn>
 
-          <v-btn v-if="!usuarioLogueado" text>
+          <!-- <v-btn v-if="!usuarioLogueado" text>
             <router-link to="/insertar" class="text-rutas"
               >Registrarse</router-link
             >
-          </v-btn>
+          </v-btn> -->
         </v-toolbar-items>
       </v-toolbar>
     </v-app-bar>
@@ -97,6 +108,7 @@ export default {
 
   data: () => ({
     dialog: false,
+    value: 1,
   }),
   // Antes de que se monten los elementos se emite el evento que valida que si el usuario esta logueado.
   beforeMount() {
@@ -150,6 +162,7 @@ h2 {
   color: black !important;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   padding: 15px;
+  text-transform: none;
 }
 .text-rutas:link,
 .text-rutas:visited,
