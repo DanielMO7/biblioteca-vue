@@ -153,6 +153,16 @@
                     </v-btn>
                   </v-col>
                 </v-card-actions>
+                <v-row>
+                  <v-col cols="12" class="text-center mt-5">
+                    <p>
+                      ¿Ya estás registrado? Ingresa
+                      <router-link to="/ingresar" class="text-rutas-logo"
+                        >aquí</router-link
+                      >.
+                    </p>
+                  </v-col>
+                </v-row>
               </v-row>
             </v-container>
           </v-form>
