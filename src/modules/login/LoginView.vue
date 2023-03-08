@@ -16,8 +16,8 @@
           <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
             <v-card-title>INICIAR SESION</v-card-title>
           </v-toolbar>
-          <v-card height="88%" class="d-flex align-center mb-5">
-            <v-container>
+          <v-card height="90%" class="d-flex align-center mt-2 mb-0">
+            <v-container class="mb-0">
               <v-form ref="form" v-model="valid" lazy-validation>
                 <v-row>
                   <v-col>
@@ -68,7 +68,8 @@
                   Contraseña <strong>Incorrecta</strong>, por favor,
                   <strong>verificala</strong>.
                 </v-alert>
-                <v-card-actions class="justify-center">
+
+                <v-card-actions class="justify-center mt-2">
                   <v-btn
                     :disabled="!valid"
                     color="#A52A2A"
@@ -87,6 +88,16 @@
                   </v-btn>
                 </v-card-actions>
               </v-form>
+              <v-row>
+                <v-col cols="12" class="text-center mt-5">
+                  <p>
+                    ¿No estás registrado? Regístrate
+                    <router-link to="/insertar" class="text-rutas-logo"
+                      >aquí</router-link
+                    >.
+                  </p>
+                </v-col>
+              </v-row>
             </v-container>
           </v-card>
         </v-card>
@@ -214,6 +225,7 @@ export default {
               // Trae los datos del usuario
               await PerfilServices.PerfilUsuario().then((response) => {
                 let data_user = response.data.data;
+                console.log(data_user);
                 //charAt(0) | Selecciona el primer caracter de un string.
                 let iniciales_nombre = data_user.name.charAt(0);
                 // Verificamos el nombre de cada rol
@@ -232,6 +244,7 @@ export default {
                     rol: data_user.rol,
                     rol_nombre: data_user.rol_nombre,
                     iniciales_nombre: data_user.iniciales_nombre,
+                    id_usuario: data_user.id,
                   },
                 });
               });
@@ -274,5 +287,11 @@ h5 {
   text-shadow: 1px 1px 1px rgb(59 59 59);
   background: #a52a2a;
   color: white;
+}
+.text-rutas {
+  text-decoration: none;
+  color: black !important;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  padding: 15px;
 }
 </style>
