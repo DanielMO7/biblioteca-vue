@@ -10,7 +10,7 @@
     />
 
     <v-main>
-      <router-view />
+      <router-view @verificarStorage="validar_Storage" />
     </v-main>
 
     <!--Footer-->
@@ -163,6 +163,7 @@ export default {
       fullName: "null",
       email: "null",
     },
+    loading: false,
   }),
   // Antes de motrasen los elementos se verifica la informacion del local storage.
   beforeUpdate() {
@@ -238,6 +239,7 @@ export default {
     },
     /** Valida que si existe el token de acceso */
     async validar_Storage() {
+      this.loading = true;
       if (localStorage.acces_token) {
         // Verifica que el token funcione correctamente
         await globalServices
@@ -266,6 +268,7 @@ export default {
       } else {
         this.usuarioLogueado = false;
       }
+      this.loading = false;
     },
   },
 };
