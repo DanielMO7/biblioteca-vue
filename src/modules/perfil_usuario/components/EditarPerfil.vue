@@ -178,7 +178,6 @@ export default {
               })
                 .then((response) => {
                   this.loading_register = false;
-                  console.log(response.data);
                   if (response.data.status == 2) {
                     this.email_validacion = true;
                     setTimeout(() => (this.email_validacion = false), 5000);
@@ -213,7 +212,6 @@ export default {
                   }
                 })
                 .catch((err) => {
-                  console.log("entro");
                   console.log(err.data);
                   this.loading_register = false;
                 });

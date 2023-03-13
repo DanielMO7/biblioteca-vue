@@ -221,7 +221,6 @@ export default {
                     5000
                   );
                 }
-                console.log(response.data);
                 this.loading_contrasena = false;
               })
               .catch((err) => {
