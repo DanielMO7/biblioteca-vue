@@ -31,19 +31,14 @@
               >Registrarse</router-link
             >
           </v-btn> -->
-          <v-btn text>
-            <router-link
-              to="/"
-              style="color: inherit; line-height: normal; text-decoration: none"
-              >Inicio</router-link
-            >
-          </v-btn>
-          <v-btn v-if="!usuarioLogueado" text>
-            <router-link
-              to="/ingresar"
-              style="color: inherit; line-height: normal; text-decoration: none"
-              >Ingresar</router-link
-            >
+
+          <v-btn @click="$router.push('/')" text> Inicio </v-btn>
+          <v-btn
+            v-if="!usuarioLogueado"
+            @click="$router.push('/ingresar')"
+            text
+          >
+            Ingresar
           </v-btn>
 
           <!-- Menu de perfil de usuario -->
