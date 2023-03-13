@@ -183,8 +183,8 @@
                 <v-row>
                   <v-col class="d-flex justify-center"
                     ><v-progress-circular
-                      :size="100"
-                      :width="12"
+                      :width="7"
+                      :size="77"
                       color="#a52a2a"
                       indeterminate
                     ></v-progress-circular>

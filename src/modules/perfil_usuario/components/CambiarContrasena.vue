@@ -110,8 +110,8 @@
           <v-row>
             <v-col class="d-flex justify-center"
               ><v-progress-circular
-                :size="85"
-                :width="9"
+                :width="7"
+                :size="77"
                 color="#a52a2a"
                 indeterminate
               ></v-progress-circular>

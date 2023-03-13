@@ -87,6 +87,7 @@
       </v-container>
     </v-form>
   </v-card>
+  <!-- Logadin del editar perfil -->
   <v-card v-else>
     <v-toolbar class="d-flex justify-center" color="#a52a2a" dense dark>
       <v-card-title>Editar Perfil</v-card-title>
@@ -97,8 +98,8 @@
           <v-row>
             <v-col class="d-flex justify-center"
               ><v-progress-circular
-                :size="85"
-                :width="9"
+                :width="7"
+                :size="77"
                 color="#a52a2a"
                 indeterminate
               ></v-progress-circular>
